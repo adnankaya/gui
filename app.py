@@ -15,6 +15,6 @@ class Application():
 
 if __name__=='__main__':
     window = tk.Tk()
-    window.geometry("800x600")
+    window.geometry("1000x600")
     window.title("Kayace | Tkinter Dersleri")
     app = Application(window)

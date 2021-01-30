@@ -12,20 +12,40 @@ class Base(BaseWidget):
     def __init__(self, *args, **kwargs):
         BaseWidget.__init__(self, *args, **kwargs)
         self.miliseconds = 1
-
+        # Checkboxes
         self.cb_adjusted_var = tk.BooleanVar(self.F_Thresh)
         self.cb_adjusted.configure(variable=self.cb_adjusted_var)
-
+        self.cb_hist_eq_var = tk.BooleanVar(self.F_Hist_Eq)
+        self.cb_hist_eq.configure(variable=self.cb_hist_eq_var)
+        self.cb_clahe_var = tk.BooleanVar(self.F_Clahe)
+        self.cb_clahe.configure(variable=self.cb_clahe_var)
+        
+        # Scales
         self.scale_thresh_var = tk.IntVar(self.F_Thresh, value=20)
         self.scale_thresh.configure(variable=self.scale_thresh_var)
         self.lb_thresh_res['text'] = str(self.scale_thresh_var.get())
 
-        self.scale_resize_var = tk.IntVar(self.F_Resize, value=20)
+        self.scale_resize_var = tk.IntVar(self.F_Resize, value=60)
         self.scale_resize.configure(variable=self.scale_resize_var)
         self.lb_resize_res['text'] = str(self.scale_resize_var.get())
 
-        colorspaces = ['BGR', 'Gray', 'HSV', 'CIELab']
+        self.scale_contrast_var = tk.IntVar(self.F_Contrast, value=10)
+        self.scale_contrast.configure(variable=self.scale_contrast_var)
+        self.lb_contrast_res['text'] = str(self.scale_contrast_var.get()/10)
+        
+        self.scale_bright_var = tk.IntVar(self.F_Bright, value=0)
+        self.scale_bright.configure(variable=self.scale_bright_var)
+        self.lb_bright_res['text'] = str(self.scale_bright_var.get())
+
+        colorspaces = ['None','RGB', 'Gray', 'HSV', 'CIELab']
         self.combo_colorspace.configure(values=colorspaces)
+        self.combo_colorspace.set(colorspaces[0])
+
+        morph_list = ['None', 'erosion', 'dilation',
+                'opening', 'closing', 'gradient',
+                'top hat', 'black hat']
+        self.combobox_morph.configure(values=morph_list)
+        self.combobox_morph.set(morph_list[0])
 
     def start(self):
         try:
@@ -77,3 +97,13 @@ class Base(BaseWidget):
     def select_colorspace(self, event=None):
         val = self.combo_colorspace.get()
         print(type(val), val)
+
+    def get_contrast(self, event=None):
+        val = int(self.scale_contrast.get()) / 10
+        self.lb_contrast_res['text'] = str(val)
+        return val
+    
+    def get_bright(self, event=None):
+        val = int(self.scale_bright.get())
+        self.lb_bright_res['text'] = str(val)
+        return val
