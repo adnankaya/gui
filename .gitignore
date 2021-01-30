@@ -1,0 +1,9 @@
+*.jpeg
+*.png
+env*
+.vscode
+
+*.pyc
+__pycache__/**
+
+workspace/**
