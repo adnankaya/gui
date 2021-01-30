@@ -6,6 +6,8 @@ from widgets.base import Base
 
 class Application():
     def __init__(self, master):
+        style_global = ttk.Style()
+        style_global.theme_use('clam')
 
         base = Base(master)
         base.pack(expand=True, fill='both')
