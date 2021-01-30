@@ -62,6 +62,9 @@ class Base(BaseWidget):
 
                 if self.combo_colorspace.get():
                     frame = self.get_frame_by_colorspace(frame)
+                
+                if self.get_contrast()!= 1 and self.get_bright()!=0:
+                    frame = self.apply_contrast_brightness_to_frame(frame)
 
                 resizedframe = self.camera.resize_frame(
                     img=frame, scale_percent=self.get_resize_val()
@@ -107,3 +110,9 @@ class Base(BaseWidget):
         val = int(self.scale_bright.get())
         self.lb_bright_res['text'] = str(val)
         return val
+    
+    def apply_contrast_brightness_to_frame(self, frame):
+        alpha = float(self.get_contrast())
+        beta = float(self.get_bright())
+        contrasted = cv.convertScaleAbs(frame, alpha=alpha, beta=beta)
+        return contrasted
