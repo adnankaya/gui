@@ -3,6 +3,7 @@ import tkinter.ttk as ttk
 import PIL.Image
 import PIL.ImageTk
 import cv2 as cv
+import numpy as np
 # internals
 from .base_widget import BaseWidget
 from camera import Camera
@@ -13,7 +14,7 @@ class Base(BaseWidget):
         BaseWidget.__init__(self, *args, **kwargs)
         self.miliseconds = 1
         # Checkboxes
-        self.cb_adjusted_var = tk.BooleanVar(self.F_Thresh)
+        self.cb_adjusted_var = tk.BooleanVar(self.F_Buttons)
         self.cb_adjusted.configure(variable=self.cb_adjusted_var)
         self.cb_hist_eq_var = tk.BooleanVar(self.F_Hist_Eq)
         self.cb_hist_eq.configure(variable=self.cb_hist_eq_var)
@@ -52,6 +53,11 @@ class Base(BaseWidget):
         self.combobox_threshtype.configure(values=THRESH_TYPES)
         self.combobox_threshtype.set(THRESH_TYPES[0])
 
+        # spinbox
+        style_spin = ttk.Style()
+        style_spin.configure("TSpinbox", arrowsize=20, arrowcolor="#336699")
+        self.spin_kernel.config(style='TSpinbox')
+
     def start(self):
         try:
             self.camera = Camera(camera_source='/dev/video0')
@@ -65,14 +71,18 @@ class Base(BaseWidget):
             if frame is not None:
                 frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
 
-                if self.combo_colorspace.get():
-                    frame = self.get_frame_by_colorspace(frame)
+                if self.cb_adjusted_var.get():                
+                    if self.combo_colorspace.get():
+                        frame = self.get_frame_by_colorspace(frame)
 
-                if self.get_contrast() != 1 and self.get_bright() != 0:
-                    frame = self.apply_contrast_brightness_to_frame(frame)
+                    if self.get_contrast() != 1 and self.get_bright() != 0:
+                        frame = self.apply_contrast_brightness_to_frame(frame)
 
-                if self.get_thresh_val() != 0 and self.combobox_threshtype.get() != 'None':
-                    frame=self.get_thresholded_frame(frame)
+                    if self.get_thresh_val() != 0 and self.combobox_threshtype.get() != 'None':
+                        frame = self.get_thresholded_frame(frame)
+                    
+                    if self.combo_colorspace.get()=='Gray' and self.combobox_morph.get()!='None':
+                        frame = self.apply_morphology(frame)
 
                 resizedframe = self.camera.resize_frame(
                     img=frame, scale_percent=self.get_resize_val()
@@ -128,6 +138,26 @@ class Base(BaseWidget):
                 frame, thresh, maxval, cv.THRESH_TOZERO_INV)
         if val == 'TRUNC':
             r, frame = cv.threshold(frame, thresh, maxval, cv.THRESH_TRUNC)
+        return frame
+
+    def apply_morphology(self, frame):
+        spinvar = int(self.spin_kernel.get())
+        kernel = np.ones((spinvar, spinvar), np.uint8)
+        val = self.combobox_morph.get()
+        if val == 'erosion':
+            frame = cv.erode(frame, kernel)
+        if val == 'dilation':
+            frame = cv.dilate(frame, kernel)
+        if val == 'opening':
+            frame = cv.morphologyEx(frame, cv.MORPH_OPEN, kernel)
+        if val == 'closing':
+            frame = cv.morphologyEx(frame, cv.MORPH_CLOSE, kernel)
+        if val == 'gradient':
+            frame = cv.morphologyEx(frame, cv.MORPH_GRADIENT, kernel)
+        if val == 'top hat':
+            frame = cv.morphologyEx(frame, cv.MORPH_TOPHAT, kernel)
+        if val == 'black hat':
+            frame = cv.morphologyEx(frame, cv.MORPH_BLACKHAT, kernel)
         return frame
 
     def get_contrast(self, event=None):

@@ -38,7 +38,10 @@ class BaseWidget(ttk.Panedwindow):
         self.lb_resize_res.configure(text='0')
         self.lb_resize_res.pack(padx='5', pady='5', side='right')
         self.F_Resize.configure(height='200', relief='groove', width='200')
-        self.F_Resize.pack(padx='10', pady='10', side='top')
+        self.F_Resize.pack(padx='10', pady='10', side='left')
+        self.cb_adjusted = tk.Checkbutton(self.F_Buttons)
+        self.cb_adjusted.configure(font='{verdana} 10 {}', text='Adjusted')
+        self.cb_adjusted.pack(pady='5', side='left')
         self.F_Buttons.configure(height='200', relief='groove', width='200')
         self.F_Buttons.pack(side='top')
         self.add(self.F_Buttons, weight='1')
@@ -51,10 +54,17 @@ class BaseWidget(ttk.Panedwindow):
         self.SF_Canvas.pack(expand='true', fill='both', side='top')
         self.PW_Body.add(self.SF_Canvas, weight='3')
         self.SF_Toolbar = ScrolledFrame(self.PW_Body, scrolltype='both')
+        self.F_Colorspace = ttk.Frame(self.SF_Toolbar.innerframe)
+        self.lb_colorspace = ttk.Label(self.F_Colorspace)
+        self.lb_colorspace.configure(text='Colorspace')
+        self.lb_colorspace.pack(padx='3', pady='3', side='left')
+        self.combo_colorspace = ttk.Combobox(self.F_Colorspace)
+        self.combo_colorspace.configure(cursor='hand2', state='readonly', width='20')
+        self.combo_colorspace.pack(padx='5', pady='5', side='left')
+        self.combo_colorspace.bind('<<ComboboxSelected>>', self.select_colorspace, add='')
+        self.F_Colorspace.configure(height='200', relief='groove', width='200')
+        self.F_Colorspace.pack(fill='x', pady='5', side='top')
         self.F_Thresh = ttk.Frame(self.SF_Toolbar.innerframe)
-        self.cb_adjusted = tk.Checkbutton(self.F_Thresh)
-        self.cb_adjusted.configure(font='{verdana} 10 {}', text='Adjusted')
-        self.cb_adjusted.pack(anchor='nw', pady='5', side='top')
         self.combobox_threshtype = ttk.Combobox(self.F_Thresh)
         self.combobox_threshtype.configure(cursor='hand2', state='readonly', width='20')
         self.combobox_threshtype.pack(anchor='nw', padx='5', pady='5', side='top')
@@ -71,16 +81,6 @@ class BaseWidget(ttk.Panedwindow):
         self.lb_thresh_res.pack(padx='5', pady='5', side='right')
         self.F_Thresh.configure(height='200', relief='groove', width='200')
         self.F_Thresh.pack(fill='x', side='top')
-        self.F_Colorspace = ttk.Frame(self.SF_Toolbar.innerframe)
-        self.lb_colorspace = ttk.Label(self.F_Colorspace)
-        self.lb_colorspace.configure(text='Colorspace')
-        self.lb_colorspace.pack(padx='3', pady='3', side='left')
-        self.combo_colorspace = ttk.Combobox(self.F_Colorspace)
-        self.combo_colorspace.configure(cursor='hand2', state='readonly', width='20')
-        self.combo_colorspace.pack(padx='5', pady='5', side='left')
-        self.combo_colorspace.bind('<<ComboboxSelected>>', self.select_colorspace, add='')
-        self.F_Colorspace.configure(height='200', relief='groove', width='200')
-        self.F_Colorspace.pack(fill='x', pady='5', side='top')
         self.F_Contrast = ttk.Frame(self.SF_Toolbar.innerframe)
         self.lb_contrast = ttk.Label(self.F_Contrast)
         self.lb_contrast.configure(text='Contrast')
@@ -114,9 +114,19 @@ class BaseWidget(ttk.Panedwindow):
         self.lb_morph.configure(text='Morph.')
         self.lb_morph.pack(padx='5', pady='5', side='left')
         self.combobox_morph = ttk.Combobox(self.F_Morph)
-        self.combobox_morph.configure(state='readonly')
+        self.combobox_morph.configure(state='readonly', width='12')
         self.combobox_morph.pack(padx='5', pady='5', side='left')
         self.combobox_morph.bind('<<ComboboxSelected>>', self.select_morph, add='')
+        self.lb_morph_kernel = ttk.Label(self.F_Morph)
+        self.lb_morph_kernel.configure(text='Kernel')
+        self.lb_morph_kernel.pack(padx='5', pady='5', side='left')
+        self.spin_kernel = ttk.Spinbox(self.F_Morph)
+        self.spin_kernel.configure(cursor='hand2', font='{verdana} 12 {}', from_='1', to='20')
+        self.spin_kernel.configure(width='6')
+        _text_ = '''1'''
+        self.spin_kernel.delete('0', 'end')
+        self.spin_kernel.insert('0', _text_)
+        self.spin_kernel.pack(padx='5', pady='5', side='left')
         self.F_Morph.configure(height='200', relief='groove', width='200')
         self.F_Morph.pack(fill='x', side='top')
         self.F_Hist_Eq = ttk.Frame(self.SF_Toolbar.innerframe)
@@ -167,13 +177,13 @@ class BaseWidget(ttk.Panedwindow):
     def get_resize_val(self, event=None):
         pass
 
+    def select_colorspace(self, event=None):
+        pass
+
     def select_thresh_type(self, event=None):
         pass
 
     def get_thresh_val(self, event=None):
-        pass
-
-    def select_colorspace(self, event=None):
         pass
 
     def get_contrast(self, event=None):
