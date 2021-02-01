@@ -55,11 +55,15 @@ class BaseWidget(ttk.Panedwindow):
         self.cb_adjusted = tk.Checkbutton(self.F_Thresh)
         self.cb_adjusted.configure(font='{verdana} 10 {}', text='Adjusted')
         self.cb_adjusted.pack(anchor='nw', pady='5', side='top')
+        self.combobox_threshtype = ttk.Combobox(self.F_Thresh)
+        self.combobox_threshtype.configure(cursor='hand2', state='readonly', width='20')
+        self.combobox_threshtype.pack(anchor='nw', padx='5', pady='5', side='top')
+        self.combobox_threshtype.bind('<<ComboboxSelected>>', self.select_thresh_type, add='')
         self.lb_thresh = ttk.Label(self.F_Thresh)
         self.lb_thresh.configure(text='Threshold')
         self.lb_thresh.pack(padx='5', pady='5', side='left')
         self.scale_thresh = ttk.Scale(self.F_Thresh)
-        self.scale_thresh.configure(from_='0', length='200', orient='horizontal', to='100')
+        self.scale_thresh.configure(from_='0', length='200', orient='horizontal', to='255')
         self.scale_thresh.pack(padx='5', pady='5', side='left')
         self.scale_thresh.bind('<B1-Motion>', self.get_thresh_val, add='')
         self.lb_thresh_res = ttk.Label(self.F_Thresh)
@@ -161,6 +165,9 @@ class BaseWidget(ttk.Panedwindow):
         pass
 
     def get_resize_val(self, event=None):
+        pass
+
+    def select_thresh_type(self, event=None):
         pass
 
     def get_thresh_val(self, event=None):
