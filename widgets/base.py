@@ -21,6 +21,12 @@ class Base(BaseWidget):
         self.cb_clahe_var = tk.BooleanVar(self.F_Clahe)
         self.cb_clahe.configure(variable=self.cb_clahe_var)
 
+        self.c1var = tk.BooleanVar(self.F_Colorspace)
+        self.c2var = tk.BooleanVar(self.F_Colorspace)
+        self.c3var = tk.BooleanVar(self.F_Colorspace)
+        self.cbch1.configure(variable=self.c1var)
+        self.cbch2.configure(variable=self.c2var)
+        self.cbch3.configure(variable=self.c3var)
         # Scales
         self.scale_thresh_var = tk.IntVar(self.F_Thresh, value=0)
         self.scale_thresh.configure(variable=self.scale_thresh_var)
@@ -71,7 +77,7 @@ class Base(BaseWidget):
             if frame is not None:
                 frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
 
-                if self.cb_adjusted_var.get():                
+                if self.cb_adjusted_var.get():
                     if self.combo_colorspace.get():
                         frame = self.get_frame_by_colorspace(frame)
 
@@ -80,9 +86,17 @@ class Base(BaseWidget):
 
                     if self.get_thresh_val() != 0 and self.combobox_threshtype.get() != 'None':
                         frame = self.get_thresholded_frame(frame)
-                    
-                    if self.combo_colorspace.get()=='Gray' and self.combobox_morph.get()!='None':
+
+                    if self.combo_colorspace.get() == 'Gray' and self.combobox_morph.get() != 'None':
                         frame = self.apply_morphology(frame)
+
+                    if self.cb_hist_eq_var.get():
+                        frame = self.get_equalized_frame(frame)
+
+                    if self.cb_clahe_var.get():
+                        cl = int(self.spin_cliplimit.get())
+                        tgs = int(self.spin_tgs.get())
+                        frame = self.get_clahed_frame(frame, cl, (tgs, tgs))
 
                 resizedframe = self.camera.resize_frame(
                     img=frame, scale_percent=self.get_resize_val()
@@ -96,6 +110,48 @@ class Base(BaseWidget):
 
         except Exception as exc:
             self.txt_log.insert('0.0', f"{exc}")
+
+    def get_equalized_frame(self, frame):
+        channels = (
+            self.c1var.get(),
+            self.c2var.get(),
+            self.c3var.get()
+        )
+        if self.combo_colorspace.get() == 'Gray':
+            frame = self.camera.equalize_gray_frame(frame)
+        if self.combo_colorspace.get() == 'HSV':
+            frame = self.camera.equalize_frame(frame, channels)
+            frame = cv.cvtColor(frame, cv.COLOR_HSV2RGB)
+        if self.combo_colorspace.get() == 'CIELab':
+            frame = self.camera.equalize_frame(frame, channels)
+            frame = cv.cvtColor(frame, cv.COLOR_LAB2RGB)
+        if self.combo_colorspace.get() == 'RGB':
+            frame = self.camera.equalize_frame(frame, channels)
+
+        return frame
+
+    def get_clahed_frame(self, frame, clipLimit=2.0, tileGridSize=(8, 8)):
+        channels = (
+            self.c1var.get(),
+            self.c2var.get(),
+            self.c3var.get()
+        )
+        if self.combo_colorspace.get() == 'Gray':
+            frame = self.camera.clahe_gray_frame(
+                frame, clipLimit, tileGridSize)
+        if self.combo_colorspace.get() == 'HSV':
+            frame = self.camera.clahe_frame(
+                frame, channels, clipLimit, tileGridSize)
+            frame = cv.cvtColor(frame, cv.COLOR_HSV2RGB)
+        if self.combo_colorspace.get() == 'CIELab':
+            frame = self.camera.clahe_frame(
+                frame, channels, clipLimit, tileGridSize)
+            frame = cv.cvtColor(frame, cv.COLOR_LAB2RGB)
+        if self.combo_colorspace.get() == 'RGB':
+            frame = self.camera.clahe_frame(
+                frame, channels, clipLimit, tileGridSize)
+
+        return frame
 
     def get_frame_by_colorspace(self, frame):
         val = self.combo_colorspace.get()
@@ -175,3 +231,6 @@ class Base(BaseWidget):
         beta = float(self.get_bright())
         contrasted = cv.convertScaleAbs(frame, alpha=alpha, beta=beta)
         return contrasted
+
+    def stop(self):
+        self.camera.__del__()

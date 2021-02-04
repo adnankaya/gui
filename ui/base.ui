@@ -217,8 +217,9 @@
                           <object class="ttk.Label" id="lb_colorspace">
                             <property name="text" translatable="yes">Colorspace</property>
                             <layout manager="pack">
-                              <property name="padx">3</property>
-                              <property name="pady">3</property>
+                              <property name="anchor">nw</property>
+                              <property name="padx">5</property>
+                              <property name="pady">5</property>
                               <property name="propagate">True</property>
                               <property name="side">left</property>
                             </layout>
@@ -228,9 +229,52 @@
                           <object class="ttk.Combobox" id="combo_colorspace">
                             <property name="cursor">hand2</property>
                             <property name="state">readonly</property>
-                            <property name="width">20</property>
+                            <property name="width">8</property>
                             <bind sequence="&lt;&lt;ComboboxSelected&gt;&gt;" handler="select_colorspace" add="" />
                             <layout manager="pack">
+                              <property name="anchor">nw</property>
+                              <property name="padx">5</property>
+                              <property name="pady">5</property>
+                              <property name="propagate">True</property>
+                              <property name="side">left</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="tk.Checkbutton" id="cbch1">
+                            <property name="cursor">hand2</property>
+                            <property name="idtocommand">false</property>
+                            <property name="text" translatable="yes">c1</property>
+                            <layout manager="pack">
+                              <property name="anchor">center</property>
+                              <property name="padx">5</property>
+                              <property name="pady">5</property>
+                              <property name="propagate">True</property>
+                              <property name="side">left</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="tk.Checkbutton" id="cbch2">
+                            <property name="cursor">hand2</property>
+                            <property name="idtocommand">false</property>
+                            <property name="text" translatable="yes">c2</property>
+                            <layout manager="pack">
+                              <property name="anchor">center</property>
+                              <property name="padx">5</property>
+                              <property name="pady">5</property>
+                              <property name="propagate">True</property>
+                              <property name="side">left</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="tk.Checkbutton" id="cbch3">
+                            <property name="cursor">hand2</property>
+                            <property name="idtocommand">false</property>
+                            <property name="text" translatable="yes">c3</property>
+                            <layout manager="pack">
+                              <property name="anchor">center</property>
                               <property name="padx">5</property>
                               <property name="pady">5</property>
                               <property name="propagate">True</property>
@@ -510,8 +554,59 @@
                             <property name="idtocommand">false</property>
                             <property name="text" translatable="yes">Clahe</property>
                             <layout manager="pack">
+                              <property name="anchor">nw</property>
                               <property name="padx">5</property>
                               <property name="pady">5</property>
+                              <property name="propagate">True</property>
+                              <property name="side">top</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Label" id="lbCL">
+                            <property name="text" translatable="yes">ClipLimit</property>
+                            <layout manager="pack">
+                              <property name="padx">5</property>
+                              <property name="pady">5</property>
+                              <property name="propagate">True</property>
+                              <property name="side">left</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Spinbox" id="spin_cliplimit">
+                            <property name="cursor">hand2</property>
+                            <property name="from_">1</property>
+                            <property name="text" translatable="yes">1</property>
+                            <property name="to">255</property>
+                            <property name="width">4</property>
+                            <layout manager="pack">
+                              <property name="padx">5</property>
+                              <property name="pady">5</property>
+                              <property name="propagate">True</property>
+                              <property name="side">left</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Label" id="lbTileGS">
+                            <property name="text" translatable="yes">TileGridSize</property>
+                            <layout manager="pack">
+                              <property name="padx">5</property>
+                              <property name="pady">5</property>
+                              <property name="propagate">True</property>
+                              <property name="side">left</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Spinbox" id="spin_tgs">
+                            <property name="cursor">hand2</property>
+                            <property name="from_">1</property>
+                            <property name="text" translatable="yes">1</property>
+                            <property name="to">100</property>
+                            <property name="width">4</property>
+                            <layout manager="pack">
                               <property name="propagate">True</property>
                               <property name="side">left</property>
                             </layout>
